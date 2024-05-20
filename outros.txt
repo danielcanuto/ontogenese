@@ -1,0 +1,309 @@
+preparare um tutorial explicativo 
+
+mkdir devSistem
+
+cd devSistem/
+
+python3 -m venv dev
+
+ls
+
+source dev/bin/activate
+
+pip install django
+
+python3 -m django --version
+
+django-admin startproject core .
+
+code .
+
+python manage.py runserver
+
+
+
+
+no arquivo models.py
+
+from django.db import models
+
+# Create your models here.
+class NivelOperacional(models.Model):
+    termo = models.CharField(max_length=30)
+    descricao = models.TextField()
+
+    def __str__(self):
+        return self.termo
+
+
+class CargoGestores(models.Model):
+    nome_cargo = models.CharField(max_length=50)
+    nivel_operacional = models.ForeignKey(
+        NivelOperacional, on_delete=models.CASCADE, blank=True, null=True)
+    observacao = models.TextField()
+    def __str__(self):
+        return self.nome_cargo
+
+
+
+class Orgao(models.Model):
+    nome_orgao = models.CharField(max_length=100)
+    sigla_orgao = models.CharField(max_length=10)
+    orgao_superior = models.ForeignKey('self', on_delete=models.CASCADE, blank=True, null=True)
+    inicio_atividades = models.DateField()
+    termino_atividades = models.DateField()
+    cargo_gestor = models.ForeignKey(CargoGestores, on_delete=models.CASCADE, blank=True, null=True)
+    fundamentacao_legal = models.TextField()
+    upload_fundamentacao = models.FileField(upload_to='fundamentacao/')
+    observacao = models.TextField()
+
+    def __str__(self):
+        return self.nome_orgao
+
+
+class Historico(models.Model):
+    nome_orgao_principal = models.CharField(max_length=100)
+    sigla_orgao = models.CharField(max_length=10)
+    cargo_gestor = models.ForeignKey(CargoGestores, on_delete=models.CASCADE, blank=True, null=True)
+    inicio_atividades = models.DateField()
+    termino_atividades = models.DateField()
+    periodo_historico = models.CharField(max_length=100)
+    fundamentacao_legal = models.TextField()
+    upload_fundamentacao = models.FileField(upload_to='fundamentacao/')
+    dados_biograficos = models.TextField()
+    observacao = models.TextField()
+
+    def __str__(self):
+        return self.nome_orgao
+    
+class UnidadeAdministrativa(models.Model):
+    orgao = models.ForeignKey(Orgao, on_delete=models.CASCADE, blank=True, null=True)
+    nome_unidade = models.CharField(max_length=100)
+    sigla_unidade = models.CharField(max_length=10)
+    unidade_superior = models.ForeignKey('self', on_delete=models.CASCADE, blank=True, null=True)
+    cargo_gestor = models.ForeignKey(CargoGestores, on_delete=models.CASCADE, blank=True, null=True)
+    
+    def __str__(self):
+        return f'{self.nome_unidade} - {self.sigla_unidade}'
+
+from django.contrib import admin
+from .models import NivelOperacional, CargoGestores, Orgao, GestaoPrincial, UnidadeAdministrativa
+# Register your models here.
+
+admin.site.register(NivelOperacional)
+admin.site.register(CargoGestores)
+admin.site.register(Orgao)
+admin.site.register(GestaoPrincial)
+admin.site.register(UnidadeAdministrativa)
+
+python3 manage.py makemigration
+
+python3 manage.py migrate
+
+python3 manage.py createsuperuser
+
+deve-se preencher inicialmente a classe 
+Nivel Operacional
+em seguida a classe 
+cargo gestores
+depois 
+historico 
+orgao
+Unidade Administrativa
+
+
+## Tutorial: Criando um sistema de gestão de órgãos e unidades administrativas com Django
+
+Este tutorial detalhado o guiará na criação de um sistema de gestão de órgãos e unidades administrativas usando Django. Você aprenderá a configurar o projeto, modelar seus dados, criar um painel de administração e gerenciar informações importantes.
+
+**Passo 1: Configurando o Ambiente**
+
+1. **Criando um diretório para o projeto:**
+   ```bash
+   mkdir devSistem
+   cd devSistem
+   ```
+
+2. **Criando um ambiente virtual:**
+   ```bash
+   python3 -m venv dev
+   ```
+   Esta etapa é essencial para isolar as dependências do seu projeto Django de outras bibliotecas Python em seu sistema.
+
+3. **Ativando o ambiente virtual:**
+   ```bash
+   source dev/bin/activate
+   ```
+   Você verá o nome do ambiente virtual (dev) entre parênteses no prompt de comando. Isso indica que você está trabalhando dentro do ambiente virtual.
+
+4. **Instalando Django:**
+   ```bash
+   pip install django
+   ```
+
+5. **Verificando a versão do Django:**
+   ```bash
+   python3 -m django --version
+   ```
+
+**Passo 2: Iniciando o Projeto Django**
+
+1. **Criando um novo projeto Django:**
+   ```bash
+   django-admin startproject core .
+   ```
+   Este comando cria um diretório chamado "core" contendo todos os arquivos necessários para seu projeto Django. O ponto final "." indica que o projeto deve ser criado no diretório atual.
+
+2. **Abrindo o projeto no editor de código:**
+   ```bash
+   code .
+   ```
+   Substitua "code" pelo comando para abrir o editor de código de sua preferência.
+
+**Passo 3: Executando o Servidor de Desenvolvimento**
+
+1. **Iniciando o servidor:**
+   ```bash
+   python manage.py runserver
+   ```
+   Este comando inicia o servidor de desenvolvimento do Django. Acesse o endereço `http://127.0.0.1:8000/` em seu navegador para visualizar a página inicial do seu projeto.
+
+**Passo 4: Modelando os Dados**
+
+1. **Criando o arquivo `models.py`:**
+   * No diretório `core/core/models.py`, crie as classes que representam seus dados:
+
+   ```python
+   from django.db import models
+
+   # Create your models here.
+   class NivelOperacional(models.Model):
+       termo = models.CharField(max_length=30)
+       descricao = models.TextField()
+
+       def __str__(self):
+           return self.termo
+
+   class CargoGestores(models.Model):
+       nome_cargo = models.CharField(max_length=50)
+       nivel_operacional = models.ForeignKey(
+           NivelOperacional, on_delete=models.CASCADE, blank=True, null=True)
+       observacao = models.TextField()
+       def __str__(self):
+           return self.nome_cargo
+
+   class Orgao(models.Model):
+       nome_orgao = models.CharField(max_length=100)
+       sigla_orgao = models.CharField(max_length=10)
+       orgao_superior = models.ForeignKey('self', on_delete=models.CASCADE, blank=True, null=True)
+       inicio_atividades = models.DateField()
+       termino_atividades = models.DateField()
+       cargo_gestor = models.ForeignKey(CargoGestores, on_delete=models.CASCADE, blank=True, null=True)
+       fundamentacao_legal = models.TextField()
+       upload_fundamentacao = models.FileField(upload_to='fundamentacao/')
+       observacao = models.TextField()
+
+       def __str__(self):
+           return self.nome_orgao
+
+   class Historico(models.Model):
+       nome_orgao_principal = models.CharField(max_length=100)
+       sigla_orgao = models.CharField(max_length=10)
+       cargo_gestor = models.ForeignKey(CargoGestores, on_delete=models.CASCADE, blank=True, null=True)
+       inicio_atividades = models.DateField()
+       termino_atividades = models.DateField()
+       periodo_historico = models.CharField(max_length=100)
+       fundamentacao_legal = models.TextField()
+       upload_fundamentacao = models.FileField(upload_to='fundamentacao/')
+       dados_biograficos = models.TextField()
+       observacao = models.TextField()
+
+       def __str__(self):
+           return self.nome_orgao
+
+   class UnidadeAdministrativa(models.Model):
+       orgao = models.ForeignKey(Orgao, on_delete=models.CASCADE, blank=True, null=True)
+       nome_unidade = models.CharField(max_length=100)
+       sigla_unidade = models.CharField(max_length=10)
+       unidade_superior = models.ForeignKey('self', on_delete=models.CASCADE, blank=True, null=True)
+       cargo_gestor = models.ForeignKey(CargoGestores, on_delete=models.CASCADE, blank=True, null=True)
+
+       def __str__(self):
+           return f'{self.nome_unidade} - {self.sigla_unidade}'
+
+   ```
+   * Explicação do código:
+      * **`NivelOperacional`**: Representa níveis hierárquicos, como "Diretoria", "Gerência" etc.
+      * **`CargoGestores`**: Define cargos de gestão, associando a níveis operacionais.
+      * **`Orgao`**: Representa um órgão, incluindo informações como nome, sigla, histórico, gestor, etc.
+      * **`Historico`**: Armazena informações sobre o histórico do órgão, como datas de funcionamento e nomes dos gestores.
+      * **`UnidadeAdministrativa`**: Define unidades administrativas dentro de um órgão, com informações como nome, sigla, gestor etc.
+
+**Passo 5: Criando o Painel de Administração**
+
+1. **Registrando os modelos no `admin.py`:**
+   * Abra o arquivo `core/core/admin.py` e adicione as seguintes linhas:
+
+   ```python
+   from django.contrib import admin
+   from .models import NivelOperacional, CargoGestores, Orgao, Historico, UnidadeAdministrativa
+
+   admin.site.register(NivelOperacional)
+   admin.site.register(CargoGestores)
+   admin.site.register(Orgao)
+   admin.site.register(Historico)
+   admin.site.register(UnidadeAdministrativa)
+   ```
+   * Isso cria interfaces no painel de administração do Django para gerenciar seus dados.
+
+2. **Criando as migrações:**
+   ```bash
+   python manage.py makemigrations
+   ```
+   * Este comando gera as migrações necessárias para atualizar o banco de dados com base nos modelos definidos.
+
+3. **Aplicando as migrações:**
+   ```bash
+   python manage.py migrate
+   ```
+   * Este comando aplica as migrações, criando as tabelas no banco de dados.
+
+4. **Criando um superusuário:**
+   ```bash
+   python manage.py createsuperuser
+   ```
+   * Este comando cria um superusuário para acessar o painel de administração. Digite um nome de usuário, e-mail e senha quando solicitado.
+
+**Passo 6: Acessando o Painel de Administração**
+
+1. **Acesse o painel de administração:**
+   * Acesse o endereço `http://127.0.0.1:8000/admin/` em seu navegador.
+2. **Faça login:**
+   * Utilize o nome de usuário e senha do superusuário que você criou.
+3. **Gerencie os dados:**
+   * Você verá interfaces para cada modelo que você registrou no `admin.py`. Utilize-as para criar, editar e excluir registros.
+
+**Passo 7: Preenchendo os Dados Iniciais**
+
+* Comece preenchendo a classe `NivelOperacional` com os níveis hierárquicos que você precisa (por exemplo, "Diretoria", "Gerência").
+* Em seguida, preencha a classe `CargoGestores` com os cargos de gestão, associando-os aos níveis operacionais.
+* Continue preenchendo as tabelas `Historico`, `Orgao` e `UnidadeAdministrativa` com os dados relevantes para seu sistema.
+
+**Passo 8: Adicionando Mais Recursos**
+
+* Depois de configurar os modelos básicos, você pode adicionar mais funcionalidades como:
+    * **Visualizações (Views):** Crie páginas para exibir informações e formulários para interagir com seus dados.
+    * **Templates:** Crie modelos HTML para apresentar dados de forma organizada e atraente.
+    * **Formulários (Forms):** Crie formulários para coleta de dados e validação.
+    * **Autenticação e Autorização:** Implemente login e controle de acesso.
+    * **API REST:** Crie uma API para acessar seus dados por meio de outras aplicações.
+
+**Concluindo**
+
+Este tutorial fornece uma base sólida para construir seu sistema de gestão de órgãos e unidades administrativas com Django. Com este guia, você poderá modelar seus dados, criar um painel de administração e adicionar funcionalidades personalizadas para atender às suas necessidades. Lembre-se de usar a documentação do Django para aprender mais sobre as diferentes features disponíveis.
+
+https://aistudio.google.com/app/prompts/new_chat
+
+
+    
+    
