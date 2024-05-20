@@ -14,6 +14,7 @@ class CargoGestores(models.Model):
     nivel_operacional = models.ForeignKey(
         NivelOperacional, on_delete=models.CASCADE, blank=True, null=True)
     observacao = models.TextField()
+    
     def __str__(self):
         return self.nome_cargo
 
@@ -47,8 +48,9 @@ class GestaoPrincial(models.Model):
     observacao = models.TextField()
 
     def __str__(self):
-        return self.nome_orgao
+        return self.nome_orgao_principal
     
+
 class UnidadeAdministrativa(models.Model):
     orgao = models.ForeignKey(Orgao, on_delete=models.CASCADE, blank=True, null=True)
     nome_unidade = models.CharField(max_length=100)
@@ -58,5 +60,4 @@ class UnidadeAdministrativa(models.Model):
 
     def __str__(self):
         return f'{self.nome_unidade} - {self.sigla_unidade}'
-    
     
