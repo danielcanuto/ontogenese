@@ -4,7 +4,7 @@ from .models import TipoAdminstracao, OrgaoUnidade, PeriodoHistoricoParte
 from .models import NivelAdmin, Setor
 from .models import ConfiguracaoFuncional
 from .models import PrazoDeGuarda,GuardaCorrente,GuardaIntermediario, ClasseTTDD
-from .models import Especie, TermoRemissivo, NormaEspecie, NormaTipologia, TipologiaDocumental
+from .models import Especie, TermoRemissivo, NormaEspecie, NormaTipologia, TipologiaDocumental, FuncionalidadeDocumental
 
 admin.site.register(OrgaoAtual)
 admin.site.register(CargoGestao)
@@ -26,3 +26,4 @@ admin.site.register(TermoRemissivo)
 admin.site.register(NormaEspecie)
 admin.site.register(NormaTipologia)
 admin.site.register(TipologiaDocumental)
+admin.site.register(FuncionalidadeDocumental)

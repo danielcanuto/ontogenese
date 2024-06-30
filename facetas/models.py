@@ -367,4 +367,29 @@ class TipologiaDocumental(models.Model):
         return f'{self.tipologia_adotado}'
 
     class Meta:
+        # verbose_name_plural = "05 - Faceta Tipologia documental"
+        verbose_name_plural = "Tipologia documental"
+
+
+
+class FuncionalidadeDocumental(models.Model):
+    configuracao_funcional = models.ForeignKey(
+        ConfiguracaoFuncional, 
+        on_delete=models.CASCADE,  
+        verbose_name='Configuração Funcional'
+    )
+    tipologia_documental = models.ForeignKey(
+        TipologiaDocumental, 
+        on_delete=models.CASCADE, 
+        verbose_name='Tipologia Documental'
+    )
+    # Atributos específicos da relação:
+    obrigatorio = models.BooleanField(default=False, verbose_name="Obrigatório?")
+    instrucoes = models.TextField(blank=True, verbose_name="Instruções Específicas")
+    # ... outros campos relevantes para a relação ...
+
+    class Meta:
+        # verbose_name_plural = "05 - Faceta Funcionalidade Documental"
         verbose_name_plural = "05 - Faceta Tipologia documental"
+    def __str__(self):
+        return f'{self.configuracao_funcional} - {self.tipologia_documental}' 
