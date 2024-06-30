@@ -54,22 +54,23 @@ class GestorMaior(models.Model):
 # dados sobre o perido historico da organização
 
 class PeriodoHistorico(models.Model):
-    denominacao = models.CharField(max_length=250, verbose_name="Denominação do Perído Histórico")
+    denominacao = models.CharField(max_length=250, verbose_name="Denominação do Período Histórico da Instituição")
     organizacao = models.ForeignKey(
         OrgaoAtual, on_delete=models.CASCADE, blank=True, null=True,
-        verbose_name="Orgão do Período")
+        verbose_name="Nome da Instituição no Período")
+    # auterar a 
     gestor_periodo = models.ForeignKey(
-        GestorMaior, on_delete=models.CASCADE,blank=True, null=True, verbose_name="Gestor")
-    data_inicio = models.DateField()
-    data_fim = models.DateField(blank=True, null=True)
+        GestorMaior, on_delete=models.CASCADE,blank=True, null=True, verbose_name="Nome do cargo máximo no Período")
+    data_inicio = models.DateField(verbose_name="Data de iníco do período hístorico da Instituição")
+    data_fim = models.DateField(blank=True, null=True, verbose_name="Data de término do período hístorico da Instituição")
     resumo = models.TextField(blank=True, null=True)
     doc_fundamento = models.FileField(upload_to='fundamentacao/', blank=True, null=True)
-    obs = models.TextField(blank=True, null=True)
+    obs = models.TextField(blank=True, null=True, verbose_name="Resumo da Hístoria da Instituição no perrído")
 
     def __str__(self):
         return f'{self.organizacao} - {self.denominacao}'
     class Meta:
-        verbose_name_plural = "01 - Faceta História do Todo"
+        verbose_name_plural = "01 - Faceta Histórica da Instituição (Todo)"
 
 # Faceta Vinculo interinstitucional
 
@@ -105,20 +106,23 @@ class OrgaoUnidade(models.Model):
 # dados sobre o perido historico da parte
 
 class PeriodoHistoricoParte(models.Model):
-    denominacao_da_parte = models.CharField(max_length=250, verbose_name="História da Parte")
+    denominacao_da_parte = models.CharField(max_length=250, verbose_name="Denominação do período Histórico do Órgão/Unidade (vinculado a Instituição)")
+    # revisar tabela de organização (orgao unidade setor )
     organizacao = models.ForeignKey(
         OrgaoUnidade, on_delete=models.CASCADE, blank=True, null=True,
-        verbose_name="Orgão do Período")
-    data_inicio = models.DateField()
-    data_fim = models.DateField(blank=True, null=True)
-    resumo = models.TextField(blank=True, null=True)
+        verbose_name="Nome do Órgão/Unidade no Período")
+    data_inicio = models.DateField(verbose_name="Data de inicio do período hístorico do Órgão/Unidade")
+    data_fim = models.DateField(blank=True, null=True, verbose_name="Data de término do período hístorico do Órgão/Unidade")
+    # nome_cargo = models.ForeignKey(CargoGestao,  on_delete=models.CASCADE, blank=True, null=True,
+    #     verbose_name="Nome do Órgão/Unidade no Período")
+    resumo = models.TextField(blank=True, null=True, verbose_name="Resumo da hístoria do Órgão/Unidade no perrído" )
     doc_fundamento = models.FileField(upload_to='fundamentacao/', blank=True, null=True)
     obs = models.TextField(blank=True, null=True)
 
     def __str__(self):
         return f'{self.organizacao} - {self.denominacao_da_parte}'
     class Meta:
-        verbose_name_plural = "02 - Faceta História da Parte"
+        verbose_name_plural = "02 - Faceta História do Órgão/Unidade (vinculado a Instituição)"
 
 
 # faceta organizaçao estrutural
